@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
 fun MainScreen() {
     Lab01Theme {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-            var username by remember { mutableStateOf("") }
+            var name by remember { mutableStateOf("") }
             var showGreeting by remember { mutableStateOf(false) }
 
             Column(
@@ -48,16 +48,19 @@ fun MainScreen() {
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                // User Input Field
                 UserInput(
                     name = name,
-                    onNameChange = { name = it }
+                    onNameChange = {
+                        name = it
+                        showGreeting = false // Reset greeting when input changes
+                    }
                 )
 
+                // Submit Button
                 Button(
                     onClick = {
-                        if (username.isNotBlank()) {
-                            showGreeting = false
-                        }
+                        showGreeting = name.isNotBlank() // Only show greeting if input is not blank
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -66,14 +69,14 @@ fun MainScreen() {
                     Text("Submit")
                 }
 
+                // Greeting Message
                 if (showGreeting) {
-                    Greeeting(
-                        name = username,
+                    Greeting(
+                        name = name,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 16.dp)
                     )
-
                 }
             }
         }
@@ -84,21 +87,21 @@ fun MainScreen() {
 fun UserInput(name: String, onNameChange: (String) -> Unit, modifier: Modifier = Modifier) {
     TextField(
         value = name,
-        onValueChange = { onNameChange(it) },
+        onValueChange = onNameChange,
         label = { Text("Enter your Name") },
         modifier = modifier
             .fillMaxWidth()
-            .testTag("UserInput")
+            .testTag("nameInput") // Updated test tag to "nameInput"
     )
 }
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
-        text = "Hello $username!, Welcome to InF2007!",
-        modifier = Modifier
+        text = "Hello $name!, Welcome to INF2007!", // Fixed dynamic text issue
+        modifier = modifier
             .fillMaxWidth()
-            .testTag("greeting")
+            .testTag("greetingMsg") // Updated test tag to "greetingMsg"
     )
 }
 
